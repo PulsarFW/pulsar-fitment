@@ -4,8 +4,8 @@ lua54("yes")
 client_script("@pulsar-core/exports/cl_error.lua")
 client_script("@pulsar-pwnzor/client/check.lua")
 
-description("Sandbox RP Framework Wheel Fitment")
-name("Sandbox RP Framework: pulsar-fitment")
+description("Pulsar Framework Wheel Fitment")
+name("Pulsar Framework: pulsar-fitment")
 author("Dr Nick")
 version("v1.0.0")
 
