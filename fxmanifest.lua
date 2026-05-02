@@ -7,13 +7,13 @@ client_script("@pulsar-pwnzor/client/check.lua")
 description("Pulsar Framework Wheel Fitment")
 name("Pulsar Framework: pulsar-fitment")
 author("Dr Nick")
-version("v1.0.0")
+version("v1.0.1")
 
 
 client_scripts({
-	"client/**/*.lua",
+  "client/**/*.lua",
 })
 
 server_scripts({
-	"server/**/*.lua",
+  "server/**/*.lua",
 })
