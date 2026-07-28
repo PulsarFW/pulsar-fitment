@@ -6,12 +6,18 @@
 
 # PULSAR-FITMENT
 
-### Vehicle stance, camber, and wheel track customization
+### Wheel fitment — camber and offset adjustment for spawned vehicles
 
 <br/>
 
 ![Lua](https://img.shields.io/badge/Lua_5.4-2C2D72?style=flat-square&logo=lua&logoColor=white)
 ![FiveM](https://img.shields.io/badge/FiveM-F40552?style=flat-square)
+
+<br/>
+
+<sub>Enjoy the framework? A coffee helps keep active development, hardening, and support going.</sub>
+
+<a href="https://buymeacoffee.com/pulsarframework"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;" /></a>
 
 <br/>
 
@@ -23,14 +29,15 @@
 
 ## Overview
 
-Vehicle fitment system for Pulsar Framework. Allows players to adjust wheel track width, camber angle, and suspension stance on their vehicles with real-time preview and persistent saves.
+Client menu (`client/menu.lua`) plus a camber controller for adjusting wheel fitment on the vehicle you're in. Doesn't register a `plsr.X` component.
 
 ---
 
 ## Dependencies
 
-- `pulsar-core` — framework core
-- `pulsar-menu` — in-world fitment menu
+- `pulsar_core` — framework core
+- `pulsar_vehicles` — the vehicle this resource adjusts
+- `pulsar_pwnzor` — anti-cheat check loaded alongside every resource
 
 ---
 

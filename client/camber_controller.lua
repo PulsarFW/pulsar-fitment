@@ -14,7 +14,7 @@ function OpenControllerMenu()
 
     local editedFrontCamber, editedRearCamber
 
-    wheelMenu = exports['pulsar-menu']:Create('vehicle_wheels', 'Vehicle Wheels', function()
+    wheelMenu = plsr.Menu:Create('vehicle_wheels', 'Vehicle Wheels', function()
         wheelMenuOpen = true
 
         CreateThread(function()
@@ -39,13 +39,13 @@ function OpenControllerMenu()
         RunFitmentDataUpdate()
     end, true)
 
-    local fitmentState = Entity(EDITING_VEHICLE)?.state?.WheelFitment
+    local fitmentState = plsr.State.Entity(EDITING_VEHICLE).WheelFitment
 
     local currentFrontCamberWidth
     if fitmentState and fitmentState?.frontCamber then
         currentFrontCamberWidth = fitmentState?.frontCamber
     else
-        currentFrontCamberWidth = exports['pulsar-core']:UtilsRound(GetVehicleWheelYRotation(EDITING_VEHICLE, 1) * 2, 2)
+        currentFrontCamberWidth = plsr.Utils:Round(GetVehicleWheelYRotation(EDITING_VEHICLE, 1) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Front Track Camber', {
@@ -61,12 +61,12 @@ function OpenControllerMenu()
     if fitmentState and fitmentState?.rearCamber then
         currentRearCamberWidth = fitmentState?.rearCamber
     else
-        currentRearCamberWidth = exports['pulsar-core']:UtilsRound(GetVehicleWheelYRotation(EDITING_VEHICLE, 3) * 2, 2)
+        currentRearCamberWidth = plsr.Utils:Round(GetVehicleWheelYRotation(EDITING_VEHICLE, 3) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Rear Track Camber', {
         current = currentRearCamberWidth,
-        min = 0.0,
+		min = 0.0,
         max = 0.25,
         step = 0.01,
     }, function(data)
@@ -74,10 +74,10 @@ function OpenControllerMenu()
     end)
 
     wheelMenu.Add:Button('Save', { success = true }, function()
-        exports['pulsar-core']:LoggerTrace('Fitment', 'Attempt Save')
+        plsr.Logger:Trace('Fitment', 'Attempt Save')
 
         if editedFrontCamber or editedRearCamber then
-            exports["pulsar-core"]:ServerCallback('Vehicles:WheelFitment', {
+            plsr.Callbacks:ServerCallback('Vehicles:WheelFitment', {
                 vNet = VehToNet(EDITING_VEHICLE),
                 fitment = {
                     rearCamber = editedRearCamber,
@@ -85,15 +85,15 @@ function OpenControllerMenu()
                 },
             }, function(success, newNewData)
                 if success then
-                    exports["pulsar-hud"]:Notification("success", 'Wheel Camber Saved')
+                    plsr.Notification:Success('Wheel Camber Saved')
                 else
-                    exports["pulsar-hud"]:Notification("error", 'Wheel Camber Saving Failed')
+                    plsr.Notification:Error('Wheel Camber Saving Failed')
                 end
             end)
 
             wheelMenu:Close()
         else
-            exports["pulsar-hud"]:Notification("error", 'There Was Nothing to Save')
+            plsr.Notification:Error('There Was Nothing to Save')
         end
     end)
 
@@ -102,9 +102,9 @@ function OpenControllerMenu()
     end)
 
     wheelMenu.Add:Button('Reset', { error = true }, function()
-        exports['pulsar-core']:LoggerTrace('Fitment', 'Attempt Reset')
+        plsr.Logger:Trace('Fitment', 'Attempt Reset')
 
-        exports["pulsar-core"]:ServerCallback('Vehicles:WheelFitment', {
+        plsr.Callbacks:ServerCallback('Vehicles:WheelFitment', {
             vNet = VehToNet(EDITING_VEHICLE),
             fitment = {
                 rearCamber = nil,
@@ -112,9 +112,9 @@ function OpenControllerMenu()
             },
         }, function(success, newNewData)
             if success then
-                exports["pulsar-hud"]:Notification("success", 'Wheel Camber Reset')
+                plsr.Notification:Success('Wheel Camber Reset')
             else
-                exports["pulsar-hud"]:Notification("error", 'Wheel Camber Reset Failed')
+                plsr.Notification:Error('Wheel Camber Reset Failed')
             end
         end)
 

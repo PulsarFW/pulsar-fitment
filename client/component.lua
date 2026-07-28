@@ -1,25 +1,22 @@
 EDITING_VEHICLE = nil
 
-AddEventHandler('onClientResourceStart', function(resource)
-    if resource == GetCurrentResourceName() then
-        Wait(1000)
-        exports['pulsar-hud']:InteractionRegisterMenu("veh_wheels", false, "tire", function()
-            OpenWheelMenu()
-            exports['pulsar-hud']:InteractionHide()
-        end, function()
-            local pedCoords = GetEntityCoords(LocalPlayer.state.ped)
+CreateThread(function()
+    plsr.Interaction:RegisterMenu("veh_wheels", "Wheel Fitment", "truck-monster", function()
+        OpenWheelMenu()
+        plsr.Interaction:Hide()
+    end, function()
+        local pedCoords = GetEntityCoords(PlayerPedId())
 
-            local insideZone = exports['pulsar-polyzone']:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
-            if
-                insideZone?.veh_customs_wheels
-                and LocalPlayer.state.onDuty
-                and insideZone.veh_customs_wheels == LocalPlayer.state.onDuty
-                and exports['pulsar-jobs']:HasJob(LocalPlayer.state.onDuty, false, false, 90) then
-                return true
-            end
-            return false
-        end)
-    end
+        local insideZone = plsr.Polyzone:IsCoordsInZone(pedCoords, false, 'veh_customs_wheels')
+        if
+            insideZone?.veh_customs_wheels
+            and plsr.State.flags.onDuty
+            and insideZone.veh_customs_wheels == plsr.State.flags.onDuty
+            and plsr.Jobs.Permissions:HasJob(plsr.State.flags.onDuty, false, false, 90) then
+            return true
+        end
+        return false
+    end)
 end)
 
 local fitmentVehicles = {}
@@ -35,11 +32,11 @@ AddEventHandler('Characters:Client:Logout', function()
 end)
 
 RegisterNetEvent('Fitment:Client:CamberController:UseItem', function()
-    OpenControllerMenu()
+	OpenControllerMenu()
 end)
 
 RegisterNetEvent('Fitment:Client:Update', function(netId, data)
-    if LocalPlayer.state.loggedIn then
+    if plsr.State.flags.loggedIn then
         if fitmentVehicles[netId] and fitmentVehicles[netId].veh then
             if data then
                 fitmentVehicles[netId] = {
@@ -69,7 +66,7 @@ function RunFitmentDataUpdate()
     local vPool = GetGamePool('CVehicle')
     for k, v in ipairs(vPool) do
         if NetworkGetEntityIsNetworked(v) then
-            local fitmentData = Entity(v)?.state?.WheelFitment
+            local fitmentData = plsr.State.Entity(v).WheelFitment
             if fitmentData then
                 fitmentVehicles[VehToNet(v)] = {
                     veh = v,
@@ -87,7 +84,7 @@ end
 function StartFitmentThread()
     CreateThread(function()
         local tick = 0
-        while LocalPlayer.state.loggedIn do
+        while plsr.State.flags.loggedIn do
             RunFitmentDataUpdate()
             Wait(5000)
 
@@ -101,13 +98,13 @@ function StartFitmentThread()
     end)
 
     CreateThread(function()
-        while LocalPlayer.state.loggedIn do
+        while plsr.State.flags.loggedIn do
             Wait(1)
             for k, v in pairs(fitmentVehicles) do
                 if v?.veh and v.veh ~= EDITING_VEHICLE and DoesEntityExist(v.veh) then
                     SetVehicleFrontTrackWidth(v.veh, v?.data?.frontTrack)
                     SetVehicleRearTrackWidth(v.veh, v?.data?.rearTrack)
-                    SetVehicleFrontCamber(v.veh, v?.data?.frontCamber)
+					SetVehicleFrontCamber(v.veh, v?.data?.frontCamber)
                     SetVehicleRearCamber(v.veh, v?.data?.rearCamber)
                 end
             end

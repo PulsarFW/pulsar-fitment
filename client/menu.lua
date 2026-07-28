@@ -14,7 +14,7 @@ function OpenWheelMenu()
 
     local editedFrontTrack, editedRearTrack, editedWidth
 
-    wheelMenu = exports['pulsar-menu']:Create('vehicle_wheels', 'Vehicle Wheels', function()
+    wheelMenu = plsr.Menu:Create('vehicle_wheels', 'Vehicle Wheels', function()
         wheelMenuOpen = true
 
         CreateThread(function()
@@ -39,13 +39,13 @@ function OpenWheelMenu()
         RunFitmentDataUpdate()
     end, true)
 
-    local fitmentState = Entity(EDITING_VEHICLE)?.state?.WheelFitment
+    local fitmentState = plsr.State.Entity(EDITING_VEHICLE).WheelFitment
 
     local currentFrontTrackWidth
     if fitmentState and fitmentState?.frontTrack then
         currentFrontTrackWidth = fitmentState?.frontTrack
     else
-        currentFrontTrackWidth = exports['pulsar-core']:UtilsRound(GetVehicleWheelXOffset(EDITING_VEHICLE, 1) * 2, 2)
+        currentFrontTrackWidth = plsr.Utils:Round(GetVehicleWheelXOffset(EDITING_VEHICLE, 1) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Front Track Width', {
@@ -61,7 +61,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.rearTrack then
         currentRearTrackWidth = fitmentState?.rearTrack
     else
-        currentRearTrackWidth = exports['pulsar-core']:UtilsRound(GetVehicleWheelXOffset(EDITING_VEHICLE, 3) * 2, 2)
+        currentRearTrackWidth = plsr.Utils:Round(GetVehicleWheelXOffset(EDITING_VEHICLE, 3) * 2, 2)
     end
 
     wheelMenu.Add:Slider('Rear Track Width', {
@@ -77,7 +77,7 @@ function OpenWheelMenu()
     if fitmentState and fitmentState?.rearTrack then
         currentWheelWidth = fitmentState?.rearTrack
     else
-        currentWheelWidth = exports['pulsar-core']:UtilsRound(GetVehicleWheelWidth(EDITING_VEHICLE), 2)
+        currentWheelWidth = plsr.Utils:Round(GetVehicleWheelWidth(EDITING_VEHICLE), 2)
     end
 
     wheelMenu.Add:Slider('Wheel Width', {
@@ -91,10 +91,10 @@ function OpenWheelMenu()
     end)
 
     wheelMenu.Add:Button('Save', { success = true }, function()
-        exports['pulsar-core']:LoggerTrace('Fitment', 'Attempt Save')
+        plsr.Logger:Trace('Fitment', 'Attempt Reset')
 
         if editedFrontTrack or editedRearTrack or editedWidth then
-            exports["pulsar-core"]:ServerCallback('Vehicles:WheelFitment', {
+            plsr.Callbacks:ServerCallback('Vehicles:WheelFitment', {
                 vNet = VehToNet(EDITING_VEHICLE),
                 fitment = {
                     rearTrack = editedRearTrack,
@@ -103,15 +103,15 @@ function OpenWheelMenu()
                 },
             }, function(success, newNewData)
                 if success then
-                    exports["pulsar-hud"]:Notification("success", 'Wheel Fitment Saved')
+                    plsr.Notification:Success('Wheel Fitment Saved')
                 else
-                    exports["pulsar-hud"]:Notification("error", 'Wheel Fitment Saving Failed')
+                    plsr.Notification:Error('Wheel Fitment Saving Failed')
                 end
             end)
 
             wheelMenu:Close()
         else
-            exports["pulsar-hud"]:Notification("error", 'There Was Nothing to Save')
+            plsr.Notification:Error('There Was Nothing to Save')
         end
     end)
 
@@ -120,9 +120,9 @@ function OpenWheelMenu()
     end)
 
     wheelMenu.Add:Button('Reset', { error = true }, function()
-        exports['pulsar-core']:LoggerTrace('Fitment', 'Attempt Reset')
+        plsr.Logger:Trace('Fitment', 'Attempt Reset')
 
-        exports["pulsar-core"]:ServerCallback('Vehicles:WheelFitment', {
+        plsr.Callbacks:ServerCallback('Vehicles:WheelFitment', {
             vNet = VehToNet(EDITING_VEHICLE),
             fitment = {
                 rearTrack = nil,
@@ -131,9 +131,9 @@ function OpenWheelMenu()
             },
         }, function(success, newNewData)
             if success then
-                exports["pulsar-hud"]:Notification("success", 'Wheel Fitment Reset')
+                plsr.Notification:Success('Wheel Fitment Reset')
             else
-                exports["pulsar-hud"]:Notification("error", 'Wheel Fitment Reset Failed')
+                plsr.Notification:Error('Wheel Fitment Reset Failed')
             end
         end)
 
